@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "a11y-review",
+      "description": "After the agent edits a UI component or stylesheet, asks it to check the change against the accessibility steering file.",
+      "trigger": "PostFileSave",
+      "matcher": "src[\\\\/](ui|app)[\\\\/].*\\.(tsx|css)$",
+      "action": {
+        "type": "agent",
+        "prompt": "You just edited a UI file. Check that file against .kiro/steering/accessibility.md: single-switch operability, 44px targets, visible focus, contrast in all three themes, reduced motion, the 3-flashes-per-second limit, accessible names and aria-live usage. Fix any violation now. Then add one line to your summary: 'a11y: OK' or 'a11y: fixed <what>' or 'a11y: could not fix <what>'."
+      }
+    }
+  ]
+}

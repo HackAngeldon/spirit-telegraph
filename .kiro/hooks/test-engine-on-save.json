@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "test-engine-on-save",
+      "description": "Runs the Morse engine's unit and property tests whenever the agent edits a file in src/engine/. Failures (including fast-check counterexamples) go straight back to the agent.",
+      "trigger": "PostFileSave",
+      "matcher": "src[\\\\/]engine[\\\\/].*\\.ts$",
+      "action": {
+        "type": "command",
+        "command": "npx vitest run src/engine --reporter=dot"
+      },
+      "timeout": 180
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "test-companion",
+      "description": "When the agent creates a new pure-logic module, asks it to create the matching example and property test files.",
+      "trigger": "PostFileCreate",
+      "matcher": "src[\\\\/](engine|input|predict)[\\\\/](?!.*\\.test\\.ts$)(?!.*-adapter\\.ts$)[^\\\\/]+\\.ts$",
+      "action": {
+        "type": "agent",
+        "prompt": "You just created a new pure-logic module. If it has no tests yet, create <name>.test.ts for example tests and, if any spec property applies to it, <name>.pbt.test.ts using fast-check. Name each property and the requirement it validates in a comment, as described in .kiro/steering/structure.md. Don't create tests for browser adapters (*-adapter.ts)."
+      }
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "verify-after-task",
+      "description": "After every spec task, type-checks and runs the whole test suite so a task is never marked done on a red build.",
+      "trigger": "PostTaskExec",
+      "action": {
+        "type": "command",
+        "command": "npm run typecheck && npm test"
+      },
+      "timeout": 300
+    }
+  ]
+}
