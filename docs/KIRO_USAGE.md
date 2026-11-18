@@ -15,3 +15,9 @@
 
 ## Daily log
 <!-- /kiro-log appends entries below this line -->
+
+### 2026-11-18: starting point (before Kiro)
+- **Prepared outside Kiro:** the specs, steering files and hooks were drafted with Claude Code (another AI assistant) as a starting brief.
+- **Prototype set aside:** a throwaway prototype of the app was also built with Claude Code. It was removed from this repo, and the app is being rebuilt in Kiro from the specs. Lessons from it fed into the spec and steering text only, not into code.
+- **Kiro features used:** none yet. All tasks in `.kiro/specs/*/tasks.md` are unticked.
+- **Next in Kiro:** run Analyze Requirements on each spec, revise in Markdown Review, then build task by task, starting with `morse-engine`.

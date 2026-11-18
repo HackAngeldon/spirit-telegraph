@@ -24,7 +24,7 @@ flowchart TB
 ### Session controller (`src/app/session-controller.ts`)
 ```ts
 export interface SessionSnapshot {
-  tape: Symbol[]; telegram: string; suggestions: string[]; highlight: number | null;
+  tape: MorseSymbol[]; telegram: string; suggestions: string[]; highlight: number | null;
   asleep: boolean; yesNo: { active: boolean; since: number } | null;
   alarm: { active: boolean; since: number } | null;
   status: InputStatus; lastUnknownAt: number | null;

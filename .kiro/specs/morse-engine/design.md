@@ -25,7 +25,7 @@ flowchart LR
 
 ### Codec (`codec.ts`)
 ```ts
-export type Symbol = '.' | '-';
+export type MorseSymbol = '.' | '-';   // not "Symbol", which would shadow the built-in
 export const CHAR_CODES: Readonly<Record<string, string>>;      // 'A' -> '.-'
 export function decodeSequence(code: string): string | undefined;
 export function encode(text: string): string[];                 // one code per character; ' ' -> '/'
@@ -33,19 +33,24 @@ export function decodeCodes(codes: string[]): string;           // inverse of en
 export function validateControls(controls: ControlMap): ControlCollision[];
 ```
 
+The codec also holds the control-code table: `CONTROLS`, `ControlMap`, `DEFAULT_CONTROLS`, `controlForCode`.
+
+### Settings (`settings.ts`)
+`TimingSettings`, the `KEYBOARD_TIMING` and `FACE_TIMING` presets, and `validateSettings` (shown below under the engine for context).
+
 ### Engine (`engine.ts`)
 ```ts
 export type EngineInput =
   | { kind: 'down'; t: number }
   | { kind: 'up'; t: number }
-  | { kind: 'symbol'; symbol: Symbol; t: number }   // two-switch mode
+  | { kind: 'symbol'; symbol: MorseSymbol; t: number }   // two-switch mode
   | { kind: 'cancel'; t: number }
   | { kind: 'tick'; t: number };
 
 export type Control = 'SPACE' | 'ERASE' | 'NEXT' | 'ACCEPT' | 'SPEAK' | 'CLEAR' | 'SOS';
 
 export type EngineEvent =
-  | { type: 'symbol'; symbol: Symbol }
+  | { type: 'symbol'; symbol: MorseSymbol }
   | { type: 'char'; char: string }
   | { type: 'control'; control: Control }
   | { type: 'unknown'; code: string }
@@ -69,7 +74,7 @@ export interface EngineState {
   lastT: number;               // last accepted timestamp
   downAt: number | null;       // start of the current press
   lastUpAt: number | null;
-  pending: Symbol[];
+  pending: MorseSymbol[];
   asleep: boolean;
   wordSpacePending: boolean;   // a char was committed; auto word space not yet sent
   estimates: { dotMs: number; dashMs: number; gapMs: number };   // running averages
@@ -132,7 +137,7 @@ Each property is checked with `fast-check`, at least 200 runs each (1,000 for pr
 
 **Property 4: Tolerates jitter.** *For any* message (letters and spaces, with spaces sent as the SPACE control) and any unit `u` in 160–600 ms, with adaptive timing off, dash threshold = 2u and letter pause = 2.5u, the engine decodes the same message when dots (1u), dashes (3u) and gaps inside a letter (1u) are each jittered by up to ±30% and gaps between letters are drawn from 3u–5u. **Validates: Requirements 2.2, 2.3, 3.1, 3.2**
 
-**Property 5: Short presses are inert.** *For any* state and any press shorter than `minPressMs`, the engine emits no events and changes only `lastT`, `downAt` and `lastUpAt`. **Validates: Requirement 2.1**
+**Property 5: Short presses are inert.** *For any* state, ending a press that began less than `minPressMs` earlier emits no events and changes only `lastT` and `downAt` (so a twitch never delays the letter commit). **Validates: Requirement 2.1**
 
 **Property 6: Never crashes, never emits junk.** *For any* random sequence of inputs (including out-of-order timestamps, double downs, cancels and ticks), `stepEngine` never throws, every `char` event holds a supported character, and inputs with past timestamps leave the state unchanged. **Validates: Requirements 1.2, 2.5**
 

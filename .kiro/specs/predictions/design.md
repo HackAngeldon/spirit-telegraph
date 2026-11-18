@@ -48,7 +48,7 @@ export function learn(h: History, utterance: string): History;
 - Calls Claude with the official `@anthropic-ai/sdk`:
   - `model: process.env.PREDICT_MODEL ?? 'claude-opus-5-5'`
   - `output_config: { effort: 'low', format: <JSON schema below> }`
-  - `max_tokens: 400`, no `temperature`, no assistant prefill (the current API rejects both)
+  - `max_tokens: 1024` (it includes thinking tokens on Opus 5.5, which always thinks), no `temperature`, no assistant prefill (the current API rejects both)
   - Server-side refusal fallback: send the beta `server-side-fallback-2026-07-01` with `fallbacks: 'default'` through the SDK's beta messages endpoint. Check the exact SDK call against the current docs (use the context7 MCP server).
   - Check `stop_reason` before reading content. A `refusal` or `max_tokens` stop returns empty lists.
 - `PREDICT_MODEL` lets you trade quality for speed and cost, for example `claude-haiku-5-5` for lower latency. Measure before switching.

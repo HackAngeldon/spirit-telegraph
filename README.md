@@ -4,7 +4,7 @@
 
 Built for **Kiroween 2026** (Resurrection category). In 1848 the "spiritual telegraph" claimed to talk with the dead; we bring back the telegraph key so the living can be heard.
 
-> Status: **starter kit**. This folder holds the Kiro specs, steering, hooks and MCP setup. There is no app code yet; Kiro builds it from the specs.
+> Status: **starting kit for the Kiro build**. This repo holds the Kiro specs, steering, hooks and MCP setup. There is no app code yet: the app is built in Kiro from these specs. (An earlier prototype was built outside Kiro and set aside; it is not part of this repo.)
 
 ---
 
@@ -25,8 +25,8 @@ The four specs contain **33 correctness properties**, written to be checked with
 
 ## How to use this with Kiro
 
-1. **Create the repo.** Make a new **public GitHub** repo (not GitLab or Bitbucket), copy this folder into it, and commit everything, including `.kiro/`. Check that GitHub shows "MIT license" in the About panel.
-2. **Open it in Kiro IDE.** Steering loads automatically. Open the MCP panel and confirm `playwright` and `context7` connect (Node 24 needed). Open Agent Hooks and confirm the five hooks are listed.
+1. **The repo** is public on GitHub with an MIT license, and `.kiro/` is committed. Keep it that way.
+2. **Open this folder in Kiro IDE.** Steering loads automatically. Open the MCP panel and confirm `playwright` and `context7` connect (Node 24 needed). Open Agent Hooks and confirm the five hooks are listed.
 3. **Make the specs Kiro's, not ours.** These specs are a drafted starting point. Judges score how well *you* use Kiro, so for each spec:
    - Open `requirements.md` → **Analyze Requirements**. Fix what it finds in Markdown Review.
    - Ask Kiro to revise `design.md` and `tasks.md` from the revised requirements. Keep its changes; they're your evidence.

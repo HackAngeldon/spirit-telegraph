@@ -1,18 +1,36 @@
 # Dependencies and builds
 node_modules/
 dist/
+dist-ssr/
 coverage/
 playwright-report/
 test-results/
 .vercel/
 
-# Secrets (commit .env.example only)
+# Copied from node_modules by `npm run models` (MediaPipe WASM) or fetched locally
+public/models/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Secrets and local overrides (commit .env.example only)
 .env
 .env.*
 !.env.example
+*.local
 
-# OS and editor noise
+# Editors and OS
+.vscode/*
+!.vscode/extensions.json
+.idea
 .DS_Store
 Thumbs.db
+*.suo
+*.sw?
 
 # IMPORTANT: never ignore .kiro/ — the hackathon requires it in the repo.

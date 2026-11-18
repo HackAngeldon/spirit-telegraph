@@ -8,17 +8,17 @@ src/
   engine/        Pure Morse engine: codec, timing classifier, adaptive timing, composer. No DOM, no clocks.
   input/         Switch sources: keyboard, pointer, gamepad, face. Pure detectors and thin browser adapters.
   predict/       Offline predictor, AI client, merge and ranking logic.
-  speech/        Text-to-speech and speech-recognition wrappers.
-  store/         Zustand stores and IndexedDB persistence.
-  ui/            React components, grouped by feature (telegraph/, trainer/, settings/, alarm/, onboarding/).
-  ui/theme/      Theme tokens (seance, contrast-dark, contrast-light) and fonts.
-  app/           App shell, routing, and wiring of input → engine → composer → UI.
+  services/      Browser side effects: audio (sidetone, siren), speech, speech recognition, alarm.
+  store/         Data model, Zustand store, IndexedDB persistence, export/import.
+  ui/            React components, grouped by feature (telegraph/, trainer/, phrasebook/, settings/, onboarding/).
+  ui/theme/      tokens.css (three themes), base.css, components.css. Plain CSS with component class names.
+  app/           App shell, session reducer (pure) and controller (wires input → engine → composer → effects).
 api/
-  predict.ts     Serverless proxy to the Claude API.
-public/models/   Self-hosted MediaPipe WASM files and the face landmarker model.
+  predict.ts     Serverless proxy to the Claude API (self-contained; Vercel bundles it separately).
+public/models/   MediaPipe WASM copied by `npm run models` (git-ignored); optional local face model.
 tests/e2e/       Playwright tests.
-docs/            KIRO_USAGE.md (hackathon write-up log), DEMO_SCRIPT.md.
-scripts/         Small Node scripts used by Kiro hooks.
+docs/            KIRO_USAGE.md (hackathon write-up log), DEMO_SCRIPT.md, CAMERA_TEST.md.
+scripts/         Node scripts: Kiro hook helpers, copy-mediapipe, eval-predictions.
 ```
 
 ## Conventions
@@ -28,5 +28,5 @@ scripts/         Small Node scripts used by Kiro hooks.
 - Every property test names its property and the requirement it validates in a comment, for example `// Property 1: round trip (Validates: morse-engine 1.3)`.
 - Types: prefer discriminated unions for events (`{ type: 'char', char: 'A' }`). No `any`; use `unknown` and narrow it.
 - File names: `kebab-case.ts`; components in `PascalCase.tsx`.
-- Imports flow one way: `ui` → `store` → `engine` / `input` / `predict` / `speech`. The engine never imports from anything above it.
+- Imports flow one way: `ui` → `app` / `store` → `engine` / `input` / `predict` / `services`. The engine never imports from anything above it.
 - Keep functions small. If a reducer case grows past about 30 lines, extract a helper.
