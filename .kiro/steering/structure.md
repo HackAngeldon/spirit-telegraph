@@ -14,7 +14,7 @@ src/
   ui/theme/      tokens.css (three themes), base.css, components.css. Plain CSS with component class names.
   app/           App shell, session reducer (pure) and controller (wires input → engine → composer → effects).
 api/
-  predict.ts     Serverless proxy to the Claude API (self-contained; Vercel bundles it separately).
+  predict.ts     Serverless proxy to the LLM API (self-contained; Vercel bundles it separately).
 public/models/   MediaPipe WASM copied by `npm run models` (git-ignored); optional local face model.
 tests/e2e/       Playwright tests.
 docs/            KIRO_USAGE.md (hackathon write-up log), DEMO_SCRIPT.md, CAMERA_TEST.md.

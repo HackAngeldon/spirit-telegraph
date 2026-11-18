@@ -9,14 +9,14 @@ sequenceDiagram
   participant O as Offline predictor
   participant A as AI client
   participant X as /api/predict
-  participant M as Claude API
+  participant M as LLM API
   C->>SR: "Are you cold?"
   SR->>P: heard = "Are you cold?"
   P->>O: suggest("", heard)
   O-->>P: ["Yes", "No", "I"] (instant)
   P->>A: request #42 (after 250 ms debounce)
   A->>X: POST {requestId: 42, text: "", partialWord: "", heard}
-  X->>M: messages.create (structured JSON, effort low)
+  X->>M: generate (structured JSON, low latency)
   M-->>X: {completions: [...], replies: ["Yes, a blanket please", "No, I'm fine", "A little"]}
   X-->>A: validated JSON
   A-->>P: replies for #42 (dropped if #43 was already sent)
@@ -45,13 +45,13 @@ export function learn(h: History, utterance: string): History;
 ### Predict proxy (`api/predict.ts`, Vercel function)
 - Validates the request body with zod (limits from Req 4.1).
 - Rate-limits per IP in memory (per instance; good enough for a hackathon, and the README says so) (Req 4.5).
-- Calls Claude with the official `@anthropic-ai/sdk`:
-  - `model: process.env.PREDICT_MODEL ?? 'claude-opus-5-5'`
-  - `output_config: { effort: 'low', format: <JSON schema below> }`
-  - `max_tokens: 1024` (it includes thinking tokens on Opus 5.5, which always thinks), no `temperature`, no assistant prefill (the current API rejects both)
-  - Server-side refusal fallback: send the beta `server-side-fallback-2026-07-01` with `fallbacks: 'default'` through the SDK's beta messages endpoint. Check the exact SDK call against the current docs (use the context7 MCP server).
-  - Check `stop_reason` before reading content. A `refusal` or `max_tokens` stop returns empty lists.
-- `PREDICT_MODEL` lets you trade quality for speed and cost, for example `claude-haiku-5-5` for lower latency. Measure before switching.
+- Calls a hosted LLM through the provider's official SDK. Choose the provider during the build (Amazon Bedrock is a natural fit for an AWS/Kiro project) and check every SDK call against the current docs with the context7 MCP server.
+  - Model from `process.env.PREDICT_MODEL`; key from `process.env.PREDICT_API_KEY` (or the provider's own credential mechanism).
+  - Ask for structured JSON output using the schema below, through the provider's structured-output feature where it has one.
+  - Use the provider's lowest-latency settings; the browser waits at most 2.5 s.
+  - Leave enough output-token headroom for a short JSON reply plus any reasoning the model does.
+  - Check the response's stop/finish reason before reading content. Anything other than a normal finish (refusal, length limit, error) returns empty lists.
+- `PREDICT_MODEL` lets you trade quality for speed and cost. Measure latency before choosing.
 
 **Output schema**
 ```json

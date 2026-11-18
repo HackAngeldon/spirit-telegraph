@@ -11,7 +11,7 @@ inclusion: always
 - **Face gestures:** `@mediapipe/tasks-vision` FaceLandmarker with blendshapes (`eyeBlinkLeft`, `eyeBlinkRight`, `browInnerUp`, `jawOpen`). Load it lazily, only when a face input is selected. The WASM files are copied from `node_modules` into `public/models/wasm/` by `npm run models` (runs before dev and build). The `.task` model loads from `/models/face_landmarker.task` if present, otherwise from Google's model storage, and the service worker caches it after first use.
 - **Speech:** Web Speech API. `speechSynthesis` for speaking; `SpeechRecognition` / `webkitSpeechRecognition` for the caregiver's voice where the browser supports it, with typed input as the fallback.
 - **Storage:** IndexedDB via `idb-keyval`. Nothing is stored server-side.
-- **AI predictions:** a serverless function at `api/predict.ts` (Vercel) using the official `@anthropic-ai/sdk`. The model comes from env `PREDICT_MODEL`, default `claude-opus-5-5`, with `output_config.effort: "low"` and structured JSON output. The API key lives only in server env `ANTHROPIC_API_KEY`; it never reaches the browser.
+- **AI predictions:** a serverless function at `api/predict.ts` (Vercel) that calls a hosted LLM through the provider's official SDK (provider chosen during the build). The model comes from env `PREDICT_MODEL` and the key from server env `PREDICT_API_KEY`; neither ever reaches the browser. Use structured JSON output and the provider's lowest-latency settings.
 - **Tests:** Vitest 5, `fast-check` 4 for property-based tests, Testing Library for components (to add), Playwright for end-to-end tests (to add).
 - **Tooling:** oxlint + Prettier, Node 24 LTS, npm.
 
@@ -29,6 +29,6 @@ inclusion: always
 - `src/engine/` and the pure parts of `src/input/` and `src/predict/` must not touch the DOM, `Date.now()`, timers or randomness. Time always arrives as an argument (`t` in milliseconds). This keeps them deterministic and property-testable.
 - Never send camera frames, images or audio to any server.
 - Never put secrets in client code or in committed files. Commit `.env.example` only.
-- Don't send `temperature`, `top_p` or `top_k` to the Claude API (current API versions reject them). Don't use assistant prefill. Use `output_config.format` for JSON output.
+- Check every LLM SDK parameter against the provider's current docs (context7 MCP) before using it; don't rely on remembered parameter names. Get JSON through the provider's structured-output feature, not by prompt tricks.
 - Keep the initial JS bundle under 250 KB gzipped, excluding the lazily loaded MediaPipe files.
 - Supported browsers: current Chrome, Edge, Firefox and Safari. Speech recognition is Chromium-only, so it must degrade to typed input.

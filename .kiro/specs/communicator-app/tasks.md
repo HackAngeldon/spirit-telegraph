@@ -77,5 +77,5 @@ Depends on: morse-engine (all), switch-input (tasks 1–3 at least), predictions
     - _Requirements: 12.1, 12.2_
 
 - [ ] 13. Ship
-  - Deploy to Vercel. Set `ANTHROPIC_API_KEY` and `PREDICT_MODEL` in project env, then smoke-test the deployed app with AI off and on.
+  - Deploy to Vercel. Set `PREDICT_API_KEY` and `PREDICT_MODEL` in project env, then smoke-test the deployed app with AI off and on.
   - Run `/kiro-log`, then finish `docs/KIRO_USAGE.md` and record the demo video (`docs/DEMO_SCRIPT.md`).

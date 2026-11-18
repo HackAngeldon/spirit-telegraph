@@ -1,13 +1,13 @@
 # Requirements: Predictions
 
 ## Introduction
-Every gesture costs our users effort, so predictions matter more here than anywhere else. Two predictors work together: an **offline predictor** that completes words instantly from a bundled word list and the user's own history, and an optional **AI predictor** (Claude, via a serverless proxy) that suggests whole replies, including replies to what the caregiver just said. Suggestions are only offers: the user accepts them with NEXT and ACCEPT, and nothing is ever spoken automatically.
+Every gesture costs our users effort, so predictions matter more here than anywhere else. Two predictors work together: an **offline predictor** that completes words instantly from a bundled word list and the user's own history, and an optional **AI predictor** (a hosted LLM, via a serverless proxy) that suggests whole replies, including replies to what the caregiver just said. Suggestions are only offers: the user accepts them with NEXT and ACCEPT, and nothing is ever spoken automatically.
 
 ## Glossary
 - **Predictor:** the module that produces ranked suggestions for the composer.
 - **Offline_Predictor:** on-device word completion from frequency data and user history.
 - **AI_Predictor:** the browser client that calls `/api/predict`.
-- **Predict_Proxy:** the serverless function that calls the Claude API.
+- **Predict_Proxy:** the serverless function that calls the LLM API.
 - **Partial word:** the letters typed since the last space.
 - **Heard:** the caregiver's last utterance, transcribed by speech recognition or typed.
 - **Completion:** a suggested word that finishes the partial word.
@@ -51,7 +51,7 @@ Every gesture costs our users effort, so predictions matter more here than anywh
 #### Acceptance Criteria
 1. THE Predict_Proxy SHALL accept `POST /api/predict` with JSON `{ requestId, text, partialWord, heard?, phrases? }` and reject bodies over 4 KB or fields over their limits (text 500, heard 300, each phrase 80 characters) with status 400.
 2. THE Predict_Proxy SHALL read the API key only from server environment variables and SHALL never return it or log it.
-3. THE Predict_Proxy SHALL call the Claude API with the model from `PREDICT_MODEL` (default `claude-opus-5-5`), effort `low`, and a JSON schema for structured output.
+3. THE Predict_Proxy SHALL call the LLM API with the model from `PREDICT_MODEL`, the provider's lowest-latency settings, and a JSON schema for structured output.
 4. THE Predict_Proxy SHALL validate the model output and return `{ requestId, completions: string[≤3], replies: string[≤4] }`, with each suggestion at most 60 characters.
 5. THE Predict_Proxy SHALL limit each client IP to 30 requests per minute and return 429 above that.
 6. THE Predict_Proxy SHALL NOT log request or response text.

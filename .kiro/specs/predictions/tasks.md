@@ -25,12 +25,12 @@
     - **Property 6** · **Validates: Requirement 5.4**
 
 - [ ] 4. Predict proxy
-  - [ ] 4.1 `api/predict.ts`: zod request validation, per-IP rate limit, Claude call (model from env, effort low, structured output, server-side fallback), `stop_reason` handling, output sanitiser, no content logging. Look up the current `@anthropic-ai/sdk` API with the context7 MCP server before writing the call.
+  - [ ] 4.1 `api/predict.ts`: zod request validation, per-IP rate limit, LLM call (model from env, lowest-latency settings, structured output), stop/finish-reason handling, output sanitiser, no content logging. Choose the LLM provider, then look up its current SDK with the context7 MCP server before writing the call.
     - _Requirements: 4.1–4.6_
   - [ ] 4.2 Property test: the proxy never passes through unsafe output
     - **Property 7** · **Validates: Requirements 4.4, 3.6**
   - [ ] 4.3 Example tests with a mocked SDK client: 400 on oversize input, 429 on rate limit, empty lists on refusal.
-  - [ ] 4.4 Add `.env.example` with `ANTHROPIC_API_KEY=` and `PREDICT_MODEL=claude-opus-5-5`.
+  - [ ] 4.4 Keep `.env.example` in step with the variables the proxy reads (`PREDICT_API_KEY`, `PREDICT_MODEL`).
 
 - [ ] 5. AI client
   - [ ] 5.1 Debounce, token bucket, timeout, request ids, response validation, silent fallback.
